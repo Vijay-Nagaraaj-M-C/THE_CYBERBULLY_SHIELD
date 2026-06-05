@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyberbully Shield</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">
+        <span class="shield-icon">🛡️</span>
+        <div>
+          <h1>Cyberbully Shield</h1>
+          <p class="subtitle">Real-time AI Protection</p>
+        </div>
+      </div>
+      <div class="status-indicator" id="statusDot" title="Backend status"></div>
+    </div>
+
+    <!-- Power Toggle -->
+    <div class="control-row">
+      <span class="control-label">Protection</span>
+      <label class="toggle">
+        <input type="checkbox" id="toggleEnabled" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- Sensitivity Slider -->
+    <div class="control-row">
+      <span class="control-label">Sensitivity</span>
+      <div class="slider-group">
+        <input type="range" id="thresholdSlider" min="30" max="90" value="50" class="range-slider">
+        <span class="slider-value" id="thresholdValue">50%</span>
+      </div>
+    </div>
+
+    <!-- Current Page Stats -->
+    <div class="stats-row">
+      <div class="stat-box">
+        <span class="stat-num" id="pageDetections">0</span>
+        <span class="stat-label">Flagged</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num" id="totalThreats">—</span>
+        <span class="stat-label">Total Threats</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num" id="totalScans">—</span>
+        <span class="stat-label">Total Scans</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="btn btn-scan" id="btnScan">⚡ Scan Now</button>
+      <button class="btn btn-dashboard" id="btnDashboard">📊 Dashboard</button>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <span id="backendStatus">Checking backend...</span>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyberbully Shield — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #111827;
+  --bg-card: rgba(17, 24, 39, 0.8);
+  --glass: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.08);
+  --accent: #6366f1;
+  --accent-glow: rgba(99,102,241,0.3);
+  --green: #10b981;
+  --red: #ef4444;
+  --orange: #f59e0b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Background effects ── */
+body::before {
+  content: '';
+  position: fixed; top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 30% 20%, rgba(99,102,241,0.08) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(16,185,129,0.06) 0%, transparent 50%);
+  z-index: -1;
+  animation: bgPulse 15s ease-in-out infinite alternate;
+}
+@keyframes bgPulse {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(-2%, -2%) rotate(3deg); }
+}
+
+/* ── Header ── */
+.header {
+  padding: 24px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,14,26,0.85);
+}
+.header h1 {
+  font-size: 22px; font-weight: 700;
+  background: linear-gradient(135deg, #6366f1, #a78bfa, #10b981);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.header .status {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text-secondary);
+}
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 50% { opacity: 0.5; } }
+
+.header-actions { display: flex; gap: 12px; align-items: center; }
+.btn-clear {
+  padding: 8px 16px; border-radius: 8px;
+  background: rgba(239,68,68,0.15); color: var(--red);
+  border: 1px solid rgba(239,68,68,0.3);
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-clear:hover { background: rgba(239,68,68,0.25); }
+
+/* ── Stats Grid ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px; padding: 28px 40px;
+}
+.stat-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(12px);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+.stat-card .label {
+  font-size: 12px; font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.stat-card .value {
+  font-size: 36px; font-weight: 800;
+  background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stat-card.threats .value { 
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stat-card.safe .value { 
+  background: linear-gradient(135deg, #10b981, #34d399);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stat-card.rate .value { 
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+/* ── Charts Row ── */
+.charts-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px; padding: 0 40px 28px;
+}
+.chart-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(12px);
+}
+.chart-card h3 {
+  font-size: 14px; font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+/* ── Detection Log ── */
+.log-section {
+  padding: 0 40px 40px;
+}
+.log-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+}
+.log-card h3 {
+  font-size: 14px; font-weight: 600;
+  color: var(--text-secondary);
+  padding: 20px 24px 12px;
+}
+.log-table {
+  width: 100%; border-collapse: collapse;
+}
+.log-table th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 11px; font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--glass-border);
+  background: rgba(0,0,0,0.2);
+}
+.log-table td {
+  padding: 12px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: var(--text-secondary);
+  max-width: 400px;
+}
+.log-table tr:hover td { background: rgba(255,255,255,0.02); }
+.badge {
+  display: inline-block;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+}
+.badge-danger { background: rgba(239,68,68,0.15); color: #f87171; }
+.badge-safe   { background: rgba(16,185,129,0.15); color: #34d399; }
+
+/* ── Censored viewer ── */
+.text-censored {
+  filter: blur(4px);
+  cursor: pointer;
+  transition: filter 0.3s;
+  user-select: none;
+}
+.text-censored:hover, .text-censored.revealed { filter: none; }
+.reveal-hint {
+  font-size: 10px; color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center; padding: 60px 20px;
+  color: var(--text-muted);
+}
+.empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state p { font-size: 14px; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .charts-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;gap:16px;">
+    <h1>🛡️ Cyberbully Shield</h1>
+    <div class="status">
+      <span class="status-dot"></span> Live — Local Inference
+    </div>
+  </div>
+  <div class="header-actions">
+    <span id="lastUpdate" style="font-size:12px;color:var(--text-muted);">Updating...</span>
+    <button class="btn-clear" onclick="clearHistory()">Clear History</button>
+  </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="label">Total Scans</div>
+    <div class="value" id="totalScans">0</div>
+  </div>
+  <div class="stat-card threats">
+    <div class="label">Threats Detected</div>
+    <div class="value" id="threatsDetected">0</div>
+  </div>
+  <div class="stat-card safe">
+    <div class="label">Safe Content</div>
+    <div class="value" id="safeContent">0</div>
+  </div>
+  <div class="stat-card rate">
+    <div class="label">Threat Rate</div>
+    <div class="value" id="threatRate">0%</div>
+  </div>
+</div>
+
+<!-- Charts -->
+<div class="charts-row">
+  <div class="chart-card">
+    <h3>Detections Over Time (Last 24h)</h3>
+    <canvas id="timelineChart" height="100"></canvas>
+  </div>
+  <div class="chart-card">
+    <h3>Content Classification</h3>
+    <canvas id="pieChart" height="200"></canvas>
+  </div>
+</div>
+
+<!-- Detection Log -->
+<div class="log-section">
+  <div class="log-card">
+    <h3>Recent Detections — <span style="color:var(--text-muted);font-weight:400;">hover to reveal censored text</span></h3>
+    <div style="overflow-x:auto;">
+      <table class="log-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Type</th>
+            <th>Content</th>
+            <th>Source</th>
+            <th>Status</th>
+            <th>Confidence</th>
+          </tr>
+        </thead>
+        <tbody id="logBody">
+          <tr><td colspan="6" class="empty-state">
+            <div class="icon">🔍</div>
+            <p>No detections yet. Start browsing with the extension active.</p>
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'http://localhost:5000/api';
+let timelineChart, pieChart;
+
+// ── Fetch & render stats ─────────────────────────────────────────────
+async function refreshData() {
+  try {
+    const [statsRes, histRes] = await Promise.all([
+      fetch(`${API}/stats`), fetch(`${API}/history?limit=50`)
+    ]);
+    const stats = await statsRes.json();
+    const history = await histRes.json();
+
+    // Stats cards
+    document.getElementById('totalScans').textContent = stats.total_scans.toLocaleString();
+    document.getElementById('threatsDetected').textContent = stats.threats_detected.toLocaleString();
+    document.getElementById('safeContent').textContent = stats.safe_content.toLocaleString();
+    document.getElementById('threatRate').textContent = stats.threat_rate + '%';
+
+    // Timeline chart
+    updateTimelineChart(stats.hourly);
+    updatePieChart(stats.threats_detected, stats.safe_content);
+
+    // Log table
+    renderLog(history);
+
+    document.getElementById('lastUpdate').textContent = 
+      'Updated: ' + new Date().toLocaleTimeString();
+  } catch (e) {
+    document.getElementById('lastUpdate').textContent = '⚠ Backend offline';
+  }
+}
+
+function renderLog(items) {
+  const tbody = document.getElementById('logBody');
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">
+      <div class="icon">🔍</div>
+      <p>No detections yet. Start browsing with the extension active.</p>
+    </td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(d => {
+    const time = new Date(d.timestamp).toLocaleString();
+    const domain = d.source_url ? new URL(d.source_url).hostname : '—';
+    const isThreat = d.prediction === 'Cyberbullying';
+    const badge = isThreat
+      ? '<span class="badge badge-danger">⚠ Bullying</span>'
+      : '<span class="badge badge-safe">✓ Safe</span>';
+    const text = d.text_snippet || '—';
+    const censorClass = isThreat ? 'text-censored' : '';
+    return `<tr>
+      <td style="white-space:nowrap;">${time}</td>
+      <td>${d.content_type}</td>
+      <td><span class="${censorClass}" onclick="this.classList.toggle('revealed')"
+            title="Click to reveal">${escapeHtml(text.substring(0, 120))}${text.length > 120 ? '…' : ''}</span>
+          ${isThreat ? '<br><span class="reveal-hint">click to reveal</span>' : ''}</td>
+      <td style="font-size:12px;">${domain}</td>
+      <td>${badge}</td>
+      <td>${(d.confidence * 100).toFixed(1)}%</td>
+    </tr>`;
+  }).join('');
+}
+
+function escapeHtml(t) {
+  const d = document.createElement('div');
+  d.textContent = t;
+  return d.innerHTML;
+}
+
+function updateTimelineChart(hourly) {
+  const labels = Array.from({length: 24}, (_, i) => `${String(i).padStart(2, '0')}:00`);
+  const data = new Array(24).fill(0);
+  hourly.forEach(h => { data[parseInt(h.hour)] = h.count; });
+
+  if (timelineChart) {
+    timelineChart.data.datasets[0].data = data;
+    timelineChart.update();
+  } else {
+    timelineChart = new Chart(document.getElementById('timelineChart'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Detections',
+          data,
+          borderColor: '#6366f1',
+          backgroundColor: 'rgba(99,102,241,0.1)',
+          fill: true, tension: 0.4,
+          pointRadius: 3, pointBackgroundColor: '#6366f1',
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.03)' } },
+          y: { ticks: { color: '#64748b', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.03)' }, beginAtZero: true }
+        }
+      }
+    });
+  }
+}
+
+function updatePieChart(threats, safe) {
+  const data = [threats, safe];
+  if (pieChart) {
+    pieChart.data.datasets[0].data = data;
+    pieChart.update();
+  } else {
+    pieChart = new Chart(document.getElementById('pieChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Cyberbullying', 'Safe'],
+        datasets: [{
+          data,
+          backgroundColor: ['rgba(239,68,68,0.7)', 'rgba(16,185,129,0.7)'],
+          borderColor: ['#ef4444', '#10b981'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: '#94a3b8', padding: 16, font: { size: 12 } } }
+        },
+        cutout: '65%'
+      }
+    });
+  }
+}
+
+async function clearHistory() {
+  if (!confirm('Clear all detection history?')) return;
+  await fetch(`${API}/clear`, { method: 'POST' });
+  refreshData();
+}
+
+// Initial load + auto-refresh every 10s
+refreshData();
+setInterval(refreshData, 10000);
+</script>
+</body>
+</html>

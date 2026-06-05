@@ -1,0 +1,40 @@
+# ── Datasets (large, user-downloaded from Kaggle) ──
+Datasets/
+
+# ── Model checkpoints (hosted on HuggingFace Hub) ──
+Model/checkpoints/
+*.pth
+
+# ── Python caches ──
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.pytest_cache/
+
+# ── Environment ──
+.env
+.venv/
+env/
+venv/
+
+# ── IDE / Editor ──
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── OS files ──
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── SQLite database (runtime-generated) ──
+Extension/backend/detections.db
+
+# ── Misc ──
+*.log
+*.egg-info/
+dist/
+build/

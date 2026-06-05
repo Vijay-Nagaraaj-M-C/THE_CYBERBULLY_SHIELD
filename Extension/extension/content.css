@@ -1,0 +1,92 @@
+/* ── Cyberbully Shield — Content Script Injected Styles ── */
+
+.cbs-overlay {
+  position: relative;
+  filter: blur(6px);
+  opacity: 0.5;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+  user-select: none;
+  pointer-events: none;
+}
+
+.cbs-overlay.cbs-revealed {
+  filter: none;
+  opacity: 1;
+  pointer-events: auto;
+  user-select: auto;
+}
+
+.cbs-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 99999;
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: white;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+  cursor: pointer;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  animation: cbs-slideIn 0.3s ease-out;
+}
+
+.cbs-badge:hover {
+  transform: scale(1.05);
+}
+
+.cbs-badge-icon::before {
+  content: '🛡️';
+  font-size: 12px;
+}
+
+.cbs-wrapper {
+  position: relative;
+  display: inline;
+}
+
+@keyframes cbs-slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Notification toast */
+.cbs-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999999;
+  background: rgba(10, 14, 26, 0.95);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: 12px;
+  padding: 14px 20px;
+  color: #f1f5f9;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 13px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  animation: cbs-toastIn 0.4s ease-out;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 360px;
+}
+
+.cbs-toast .icon { font-size: 18px; }
+
+@keyframes cbs-toastIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
