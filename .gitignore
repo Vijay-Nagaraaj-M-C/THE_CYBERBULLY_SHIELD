@@ -1,6 +1,9 @@
 # ── Datasets (large, user-downloaded from Kaggle) ──
 Datasets/
 
+# ── Documents (project report, not in repo) ──
+Documents/
+
 # ── Model checkpoints (hosted on HuggingFace Hub) ──
 Model/checkpoints/
 *.pth

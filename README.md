@@ -173,7 +173,6 @@ THE_CYBERBULLY_SHIELD/
 │       ├── popup.js                # Popup logic
 │       ├── popup.css               # Popup styles
 │       └── icons/                  # Extension icons (16, 48, 128px)
-├── Documents/                      # Project report & presentation
 └── README.md
 ```
 
